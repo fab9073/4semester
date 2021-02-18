@@ -96,6 +96,6 @@ public:
 };
 
 int main(void) {
-	QuadEq equality;
+	QuadEq(equality);
 	equality.FullSolvingQuadraticalEquation();
 }
