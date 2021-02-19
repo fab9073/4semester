@@ -3,7 +3,7 @@
 using namespace std;
 
 class Coeffs {
-public:
+protected:
 	double a;
 	double b;
 	double c;
@@ -27,7 +27,7 @@ public:
 };
 
 class Discriminant : public Coeffs {
-public:
+protected:
 	double value;
 
 	Discriminant() {
@@ -40,7 +40,7 @@ public:
 	bool checkDiscriminant0() { return value == 0; }
 };
 
-class QuadEq : public Discriminant {
+class QuadEq : private Discriminant {
 private:
 	double* solution;
 
