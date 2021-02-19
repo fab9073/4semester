@@ -26,48 +26,46 @@ public:
 	}
 };
 
-class Discriminant {
+class Discriminant : public Coeffs {
 public:
 	double value;
 
 	Discriminant() {
 		value = 0;
 	}
-	void calcDiscriminant(Coeffs abc) {
-		value = abc.b * abc.b - 4 * abc.a * abc.c;
+	void calcDiscriminant() {
+		value = b * b - 4 * a * c;
 	}
 	bool checkDiscriminant() { return value < 0; }
 	bool checkDiscriminant0() { return value == 0; }
 };
 
-class QuadEq : public Coeffs, public Discriminant {
+class QuadEq : public Discriminant {
 private:
-	Coeffs abc;
-	Discriminant dis;
 	double* solution;
 
 	void inline calcSolQuadEq(bool caseDis) {
 		if (caseDis) {
-			solution = new double(-abc.b / (2 * abc.a));
+			solution = new double(-b / (2 * a));
 			return;
 		}
 		else {
 			solution = new double[2];
-			solution[0] = (-abc.b + sqrt(dis.value)) / (2 * abc.a);
-			solution[1] = (-abc.b - sqrt(dis.value)) / (2 * abc.a);
+			solution[0] = (-b + sqrt(value)) / (2 * a);
+			solution[1] = (-b - sqrt(value)) / (2 * a);
 		}
 	}
 	void setQuadEq() {
-		abc.setCoeffs();
+		setCoeffs();
 	}
 	void getQuadEq() {
-		abc.getCoeffs();
+		getCoeffs();
 		cout << "Entered Quadratic Equality:" << endl;
-		cout << abc.a << "x^2 + " << abc.b << "x + " << abc.c << " = 0" << endl << endl;
+		cout << a << "x^2 + " << b << "x + " << c << " = 0" << endl << endl;
 	}
 	void solveQuadEq() {
-		dis.calcDiscriminant(abc);
-		if (dis.checkDiscriminant()) {
+		calcDiscriminant();
+		if (checkDiscriminant()) {
 			cout << "There is no real solutions" << endl << endl;
 			return;
 		}
@@ -76,10 +74,10 @@ private:
 		}
 	}
 	void getQuadEqSol() {
-		if (dis.checkDiscriminant()) {
+		if (checkDiscriminant()) {
 			return;
 		}
-		else if (dis.checkDiscriminant0()) {
+		else if (checkDiscriminant0()) {
 			cout << "Solution of Quadratic Equaliation:" << endl << "x = " << solution[0] << endl << endl;
 		}
 		else {
@@ -87,7 +85,7 @@ private:
 		}
 	}
 public:
-	QuadEq() : Coeffs(), Discriminant()
+	QuadEq()
 	{};
 	void FullSolvingQuadraticalEquation() {
 		setQuadEq();
