@@ -26,7 +26,7 @@ protected:
 	}
 };
 
-class Discriminant : public Coeffs {
+class Discriminant : protected Coeffs {
 protected:
 	double value;
 
