@@ -87,6 +87,8 @@ private:
 		}
 	}
 public:
+	QuadEq() : Coeffs(), Discriminant()
+	{};
 	void FullSolvingQuadraticalEquation() {
 		setQuadEq();
 		getQuadEq();
