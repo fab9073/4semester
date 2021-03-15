@@ -1,6 +1,6 @@
 #include <../../coeffs.hpp>
 
-
+Coeffs::Coeffs() {}
 Coeffs::Coeffs(int count) { countOfCoeffs = count; coeff = new double[count]; }
 
 void Coeffs::setCoeffs() {
@@ -13,56 +13,68 @@ void Coeffs::setCoeffs() {
 	cout << endl;
 }
 
-void Coeffs::getCoeffs() {
+void Coeffs::printCoeffs() {
 	cout << "Entered coefficents:" << endl;
 	for (int i = 0; i < countOfCoeffs; i++) {
 		cout << coeff[i] << endl;
 	}
 }
 
-void QuadEq::calcDiscriminant() { discriminant = coeff[1] * coeff[1] - 4 * coeff[0] * coeff[2]; }
+QuadEq::QuadEq()
+{
+	abc = new Coeffs(3);
+	abc->setCoeffs();
+	discriminant = 0;
+	solution = nullptr;
+}
 
-int QuadEq::checkDiscriminant() { if (discriminant < 0) return ZERO_SOLS; else return discriminant > 0 ? TWO_SOLS : ONE_SOL; }
+void QuadEq::calcDiscriminant() { discriminant = abc->coeff[B] * abc->coeff[B] - 4 * abc->coeff[A] * abc->coeff[C]; }
+
+int QuadEq::checkDiscriminant()
+{
+	if (discriminant < 0)
+		return zeroSols;
+	else
+		return discriminant > 0 ? twoSols : oneSol;
+}
 
 void QuadEq::calcSolQuadEq(int caseDis) {
-	if (caseDis == ZERO_SOLS) { cout << "There is no real solutions of quadratic equality" << endl; }
-	if (caseDis == ONE_SOL) {
-		solution = new double(-coeff[1] / (2 * coeff[0]));
+	if (caseDis == zeroSols) { cout << "There is no real solutions of quadratic equality" << endl; }
+	if (caseDis == oneSol) {
+		solution = new double(-abc->coeff[B] / (2 * abc->coeff[A]));
 	}
-	else if (caseDis == TWO_SOLS) {
-		solution = new double[TWO_SOLS];
-		solution[0] = (-coeff[1] + sqrt(discriminant)) / (2 * coeff[0]);
-		solution[1] = (-coeff[1] - sqrt(discriminant)) / (2 * coeff[0]);
+	else if (caseDis == twoSols) {
+		solution = new double[twoSols];
+		solution[0] = (-abc->coeff[B] + sqrt(discriminant)) / (2 * abc->coeff[A]);
+		solution[1] = (-abc->coeff[B] - sqrt(discriminant)) / (2 * abc->coeff[A]);
 	}
 }
 
 void QuadEq::solveQuadEq() { calcSolQuadEq(checkDiscriminant()); }
 
-void QuadEq::getQuadEq() {
+void QuadEq::printQuadEq() {
 	cout << "Entered Quadratic Equality:" << endl;
-	if (coeff[0] != 0)	cout << coeff[0] << "x^2";
+	if (abc->coeff[A] != 0)	cout << abc->coeff[A] << "x^2";
 
-	if (coeff[1] < 0) 	cout << " - " << fabs(coeff[1]) << "x";
-	else if (coeff[1] > 0) cout << " + " << coeff[1] << "x";
+	if (abc->coeff[B] < 0) 	cout << " - " << fabs(abc->coeff[B]) << "x";
+	else if (abc->coeff[B] > 0) cout << " + " << abc->coeff[B] << "x";
 
-	if (coeff[2] < 0) cout << " - " << fabs(coeff[2]);
-	else if (coeff[2] > 0) cout << " + " << coeff[2];
+	if (abc->coeff[C] < 0) cout << " - " << fabs(abc->coeff[C]);
+	else if (abc->coeff[C] > 0) cout << " + " << abc->coeff[C];
 
 	cout << " = 0" << endl << endl;
 }
 
 void QuadEq::getQuadEqSol() {
-	if (checkDiscriminant() == ZERO_SOLS) {
+	if (checkDiscriminant() == zeroSols) {
 		return;
 	}
-	else if (checkDiscriminant() == ONE_SOL) {
+	else if (checkDiscriminant() == oneSol) {
 		cout << "Solution of Quadratic Equaliation:" << endl << "x = " << solution[0] << endl << endl;
 	}
-	else if (checkDiscriminant() == TWO_SOLS) {
+	else if (checkDiscriminant() == twoSols) {
 		cout << "Solutions of Quadratic Equaliation:" << endl << "x1 = " << solution[0] << endl << "x2 = " << solution[1] << endl << endl;
 	}
 }
 
-QuadEq::QuadEq() : Coeffs(QUAD_EQ) { setCoeffs(); discriminant = 0; solution = nullptr; }
-
-void QuadEq::FullSolvingQuadraticalEquation() { getQuadEq(); calcDiscriminant(); solveQuadEq(); getQuadEqSol(); }
+void QuadEq::FullSolvingQuadraticalEquation() { printQuadEq(); calcDiscriminant(); solveQuadEq(); getQuadEqSol(); }

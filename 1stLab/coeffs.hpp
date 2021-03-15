@@ -3,24 +3,38 @@
 #include <cmath>
 using namespace std;
 
-#define QUAD_EQ 3
-#define TWO_SOLS 2
-#define ONE_SOL 1
-#define ZERO_SOLS 0
+int const quadEq = 3;
+
+enum countSols {
+	zeroSols,
+	oneSol,
+	twoSols
+};
+
+enum coef {
+	A, B, C
+};
 
 class Coeffs {
-protected:
+public:
 	double* coeff;
 	int countOfCoeffs;
 
+	Coeffs();
 	Coeffs(int count);
 
 	void setCoeffs();
-	void getCoeffs();
+	void printCoeffs();
 };
 
-class QuadEq : public Coeffs {
+class QuadEq {
+public:
+	QuadEq();
+
+	void FullSolvingQuadraticalEquation();
+
 private:
+	Coeffs* abc;
 	double* solution;
 	double discriminant;
 
@@ -31,11 +45,7 @@ private:
 	void calcSolQuadEq(int caseDis);
 	void solveQuadEq();
 
-	void getQuadEq();
+	void printQuadEq();
 	void getQuadEqSol();
 
-public:
-	QuadEq();
-
-	void FullSolvingQuadraticalEquation();
 };
