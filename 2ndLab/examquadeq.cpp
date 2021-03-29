@@ -31,10 +31,8 @@ Letter TheGood::solveEq(QuadEq equality)
 {
 	equality.solveQuadEq();
 
-	string solute = equality.getQuadEqSol();
-
 	Letter letterToTeacher;
-	letterToTeacher.setLetter(equality.getQuadEq(), solute, getName());
+	letterToTeacher.setLetter(equality.getQuadEq(), equality.getQuadEqSol(), getName());
 
 	return letterToTeacher;
 }
@@ -44,11 +42,8 @@ Letter TheBad::solveEq(QuadEq equality)
 	ostringstream solIntoString;
 	solIntoString << "x = " << 0 << endl;
 
-	string solute;
-	solute = solIntoString.str();
-
 	Letter letterToTeacher;
-	letterToTeacher.setLetter(equality.getQuadEq(), solute, getName());
+	letterToTeacher.setLetter(equality.getQuadEq(), solIntoString.str(), getName());
 
 	return letterToTeacher;
 }
