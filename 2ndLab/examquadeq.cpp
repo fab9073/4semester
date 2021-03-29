@@ -10,7 +10,8 @@ void Letter::setLetter(string equality, string sol, string studname)
 { 
 	quadEq = equality; 
 	solution = sol; 
-	name = studname; }
+	name = studname;
+}
 
 void Letter::printLetter() 
 { 
