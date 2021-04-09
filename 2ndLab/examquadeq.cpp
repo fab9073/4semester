@@ -1,5 +1,5 @@
-#include <../../quadeq.hpp>
-#include <../../examquadeq.hpp>
+#include "quadeq.hpp"
+#include "examquadeq.hpp"
 
 string Letter::getQuadEq() { return quadEq; }
 string Letter::getSolution() { return solution; }
@@ -51,25 +51,16 @@ Letter TheBad::solveEq(QuadEq equality)
 
 Letter TheUgly::solveEq(QuadEq equality)
 {
-
 	int uglyRng = rand() % 2;
-	string solute;
 
 	if (uglyRng == studGood)
 	{
-		equality.solveQuadEq();
-		solute = equality.getQuadEqSol();
+		return TheGood::solveEq(equality);
 	}
 	else
 	{
-		ostringstream solIntoString;
-		solIntoString << "x = " << 0 << endl;
-		solute = solIntoString.str();
+		return TheBad::solveEq(equality);
 	}
-
-	Letter letterToTeacher;
-	letterToTeacher.setLetter(equality.getQuadEq(), solute, getName());
-	return letterToTeacher;
 }
 
 void Teacher::StartExam(const char* tasks, vector <Student*> studGroup, stack <Letter>& LetterStack)
