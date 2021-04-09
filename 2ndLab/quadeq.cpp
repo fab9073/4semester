@@ -1,4 +1,4 @@
-#include <../../quadeq.hpp>
+#include "quadeq.hpp"
 
 
 Coeffs::Coeffs(int count)
