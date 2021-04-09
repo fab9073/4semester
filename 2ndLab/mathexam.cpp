@@ -1,5 +1,5 @@
-#include <../../quadeq.hpp>
-#include <../../examquadeq.hpp>
+#include "quadeq.hpp"
+#include "examquadeq.hpp"
 #include <stack>
 #include <vector>
 #include <map>
