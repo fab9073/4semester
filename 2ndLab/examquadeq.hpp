@@ -1,5 +1,5 @@
 #pragma once
-#include <../../quadeq.hpp>
+#include "quadeq.hpp"
 #include <stack>
 #include <vector>
 #include <map>
@@ -30,6 +30,8 @@ enum studClassificator {
 };
 
 class Student {
+protected:
+	Student() {}
 private:
 	string name;
 public:
@@ -39,19 +41,23 @@ public:
 	string getName();
 };
 
-class TheGood : public Student {
+class TheGood : virtual public Student {
+protected:
+	TheGood() {}
 public:
 	TheGood(string studname) : Student(studname) {}
 	Letter solveEq(QuadEq equality);
 };
 
-class TheBad : public Student {
+class TheBad : virtual public Student {
+protected:
+	TheBad() {}
 public:
 	TheBad(string studname) : Student(studname) {}
 	Letter solveEq(QuadEq equality);
 };
 
-class TheUgly : public Student {
+class TheUgly : public TheGood, public TheUgly {
 public:
 	TheUgly(string studname) : Student(studname) {}
 	Letter solveEq(QuadEq equality);
