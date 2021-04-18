@@ -10,7 +10,7 @@
 #include <iostream>
 #include <cmath>
 
-vector <Student*> readStudents(const char* studentlistname) 
+vector <Student*> readStudents(string studentlistname) 
 {
 	vector <Student*> studGroup;
 	Student* studInit;
