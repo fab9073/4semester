@@ -9,27 +9,30 @@
 #include <iostream>
 
 
-struct Letter {
+struct Letter
+{
 private:
 	string quadEq;
 	string solution;
 	string name;
 public:
-	string getQuadEq();
-	string getSolution();
-	string getName();
+	string getQuadEq() const;
+	string getSolution() const;
+	string getName() const;
 
 	void setLetter(string equality, string sol, string studname);
-	void printLetter();
+	void printLetter() const;
 };
 
-enum studClassificator {
+enum studClassificator 
+{
 	studGood = 1,
 	studBad,
 	studUgly
 };
 
-class Student {
+class Student
+{
 protected:
 	Student() {}
 private:
@@ -37,11 +40,12 @@ private:
 public:
 	Student(string studname);
 
-	virtual Letter solveEq(QuadEq equality);
-	string getName();
+	virtual Letter solveEq(QuadEq equality) = 0;
+	string getName() const;
 };
 
-class TheGood : virtual public Student {
+class TheGood : virtual public Student
+{
 protected:
 	TheGood() {}
 public:
@@ -49,7 +53,8 @@ public:
 	Letter solveEq(QuadEq equality);
 };
 
-class TheBad : virtual public Student {
+class TheBad : virtual public Student 
+{
 protected:
 	TheBad() {}
 public:
@@ -57,21 +62,23 @@ public:
 	Letter solveEq(QuadEq equality);
 };
 
-class TheUgly : public TheGood, public TheUgly {
+class TheUgly : public TheGood, public TheBad 
+{
 public:
 	TheUgly(string studname) : Student(studname) {}
 	Letter solveEq(QuadEq equality);
 };
 
-class Teacher {
+class Teacher 
+{
 public:
 
-	void StartExam(const char* tasks, vector <Student*> studGroup, stack <Letter>& LetterStack);
-	void checkLetter(Letter studLetter, map <string, int>& ReportMap);
+	void StartExam(string tasks, vector <Student*>& studGroup, stack <Letter>& LetterStack) const;
+	void checkLetter(Letter studLetter, map <string, int>& ReportMap) const;
 
-	void createReport(stack <Letter> LetterStack, map <string, int>& ReportMap);
+	void createReport(stack <Letter>& LetterStack, map <string, int>& ReportMap) const;
 
-	void printReport(map <string, int> ReportMap);
-	void printReport(const char* filenameReport, map <string, int> ReportMap);
+	void printReport(map <string, int>& ReportMap) const;
+	void printReport(string filenameReport, map <string, int>& ReportMap) const;
 
 };
