@@ -37,7 +37,7 @@ public:
 
 	void setQuadEq(ifstream& filestream);
 	void setQuadEq(string equality);
-	string getQuadEq();
+	string getQuadEq() const;
 	string getQuadEqSol();
 
 	void solveQuadEq();
@@ -47,5 +47,5 @@ private:
 	double* solution = nullptr;
 	double discriminant;
 
-	int checkDiscriminant();
+	int checkDiscriminant() const;
 };
