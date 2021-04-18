@@ -1,19 +1,18 @@
 #include "quadeq.hpp"
 #include "examquadeq.hpp"
 
-string Letter::getQuadEq() { return quadEq; }
-string Letter::getSolution() { return solution; }
-string Letter::getName() { return name; }
+string Letter::getQuadEq() const { return quadEq; }
+string Letter::getSolution() const { return solution; }
+string Letter::getName() const { return name; }
 
 
 void Letter::setLetter(string equality, string sol, string studname)
 { 
 	quadEq = equality; 
 	solution = sol; 
-	name = studname;
-}
+	name = studname; }
 
-void Letter::printLetter() 
+void Letter::printLetter() const
 { 
 	cout << quadEq << endl << solution << endl << name << endl << endl;
 }
@@ -22,18 +21,18 @@ void Letter::printLetter()
 
 Student::Student(string studname) { name = studname; }
 
-Letter Student::solveEq(QuadEq equality) { Letter nulletter; return nulletter; }
-
-string Student::getName() { return name; }
+string Student::getName() const { return name; }
 
 
 
-Letter TheGood::solveEq(QuadEq equality)
+Letter TheGood::solveEq(QuadEq equality) 
 {
 	equality.solveQuadEq();
 
+	string solute = equality.getQuadEqSol();
+
 	Letter letterToTeacher;
-	letterToTeacher.setLetter(equality.getQuadEq(), equality.getQuadEqSol(), getName());
+	letterToTeacher.setLetter(equality.getQuadEq(), solute, getName());
 
 	return letterToTeacher;
 }
@@ -43,8 +42,11 @@ Letter TheBad::solveEq(QuadEq equality)
 	ostringstream solIntoString;
 	solIntoString << "x = " << 0 << endl;
 
+	string solute;
+	solute = solIntoString.str();
+
 	Letter letterToTeacher;
-	letterToTeacher.setLetter(equality.getQuadEq(), solIntoString.str(), getName());
+	letterToTeacher.setLetter(equality.getQuadEq(), solute, getName());
 
 	return letterToTeacher;
 }
@@ -52,7 +54,6 @@ Letter TheBad::solveEq(QuadEq equality)
 Letter TheUgly::solveEq(QuadEq equality)
 {
 	int uglyRng = rand() % 2;
-
 	if (uglyRng == studGood)
 	{
 		return TheGood::solveEq(equality);
@@ -63,7 +64,7 @@ Letter TheUgly::solveEq(QuadEq equality)
 	}
 }
 
-void Teacher::StartExam(const char* tasks, vector <Student*> studGroup, stack <Letter>& LetterStack)
+void Teacher::StartExam(string tasks, vector <Student*>& studGroup, stack <Letter>& LetterStack) const
 {
 	ifstream taskbook(tasks);
 	QuadEq equalityExam;
@@ -81,7 +82,7 @@ void Teacher::StartExam(const char* tasks, vector <Student*> studGroup, stack <L
 	}
 }
 
-void Teacher::checkLetter(Letter studLetter, map <string, int>& ReportMap) 
+void Teacher::checkLetter(Letter studLetter, map <string, int>& ReportMap) const
 {
 	QuadEq checkSolution;
 
@@ -104,7 +105,7 @@ void Teacher::checkLetter(Letter studLetter, map <string, int>& ReportMap)
 			it->second = it->second + 1;
 }
 
-void Teacher::createReport(stack <Letter> LetterStack, map <string, int>& ReportMap)
+void Teacher::createReport(stack <Letter>& LetterStack, map <string, int>& ReportMap) const
 {
 	while (!LetterStack.empty()) 
 	{
@@ -113,7 +114,7 @@ void Teacher::createReport(stack <Letter> LetterStack, map <string, int>& Report
 	}
 }
 
-void Teacher::printReport(map <string, int> ReportMap)
+void Teacher::printReport(map <string, int>& ReportMap) const
 {
 	map <string, int> ::iterator it = ReportMap.begin();
 	for (;it != ReportMap.end();it++)
@@ -123,7 +124,7 @@ void Teacher::printReport(map <string, int> ReportMap)
 
 }
 
-void Teacher::printReport(const char* filenameReport, map <string, int> ReportMap)
+void Teacher::printReport(string filenameReport, map <string, int>& ReportMap) const
 {
 	ofstream outReport(filenameReport);
 	map <string, int> ::iterator it = ReportMap.begin();
@@ -133,3 +134,4 @@ void Teacher::printReport(const char* filenameReport, map <string, int> ReportMa
 	}
 	outReport.close();
 }
+
