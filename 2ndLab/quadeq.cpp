@@ -63,7 +63,7 @@ void QuadEq::setQuadEq(string equality)
 	discriminant = abc->coeff[B] * abc->coeff[B] - 4 * abc->coeff[A] * abc->coeff[C];
 }
 
-string QuadEq::getQuadEq() 
+string QuadEq::getQuadEq() const
 {
 	ostringstream streamIntoString;
 
@@ -85,7 +85,7 @@ string QuadEq::getQuadEq()
 	return streamIntoString.str();
 }
 
-int QuadEq::checkDiscriminant()
+int QuadEq::checkDiscriminant() const
 {
 	if (discriminant < 0)
 		return zeroSols;
@@ -108,7 +108,8 @@ void QuadEq::solveQuadEq()
 	}
 }
 
-string QuadEq::getQuadEqSol() {
+string QuadEq::getQuadEqSol()
+{
 	ostringstream streamIntoString;
 	if (checkDiscriminant() == zeroSols)
 	{
@@ -124,3 +125,4 @@ string QuadEq::getQuadEqSol() {
 	}
 	return streamIntoString.str();
 }
+
