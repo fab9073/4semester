@@ -350,7 +350,7 @@ GameField::GameField(int mapH, int mapW) {
 		cell[x][y]->reColor();
 	}
 
-	void GameField::UpDownLeftRight(xy point, std::queue<xy>& positions, color rgb) {
+	void GameField::UpDownLeftRight(xy point, std::vector<xy>& positions, color rgb) {
 		if (point.x >= mapW || point.x < 0 || point.y >= mapH || point.y < 0) 
 			return;
 		if (cell[point.x][point.y]->isExplosion || cell[point.x][point.y]->isReColor || cell[point.x][point.y]->isChecked) {
@@ -359,7 +359,7 @@ GameField::GameField(int mapH, int mapW) {
 		}
 		if (cell[point.x][point.y]->getColor() == rgb) {
 			cell[point.x][point.y]->isChecked = true;
-			positions.push(point);
+			positions.push_back(point);
 			UpDownLeftRight({ point.x + 1, point.y }, positions, rgb);
 			UpDownLeftRight({ point.x - 1, point.y }, positions, rgb);
 			UpDownLeftRight({ point.x, point.y + 1 }, positions, rgb);
@@ -367,22 +367,28 @@ GameField::GameField(int mapH, int mapW) {
 		}
 	}
 
+	bool comparator(xy point1, xy point2) {
+		return point1.y < point2.y;
+	}
+
         void GameField::CheckCombinations() {
-		std::queue<xy> positions;
+		std::vector<xy> positions;
 		for (int y = mapH-1; y > -1; y--) {
 			for (int x = 0; x < mapW; x++) {
 				UpDownLeftRight({ x,y }, positions, cell[x][y]->getColor());
 				if (positions.size() > 2)
 				{
+					std::sort(positions.begin(), positions.end(), comparator);
 					while (!positions.empty())
 					{
-						SmashOut(positions.front());
-						positions.pop();
+						SmashOut(positions.back());
+						positions.pop_back();
 					}
 				}
 				else if (!positions.empty())
 				{
-					while (!positions.empty()) positions.pop();
+					while (!positions.empty())
+						positions.pop_back();
 				}
 			}
 		}
