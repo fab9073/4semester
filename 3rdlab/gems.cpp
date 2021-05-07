@@ -184,7 +184,22 @@ namespace rgb {
 		glEnd();
 	}
 
-	void ReColor::DrawFrame() {}
+	void ReColor::DrawFrame() {
+		float x, y;
+		float dot = 100;
+		float r = 0.5f;
+		float alpha = 3.1415926f * 2.0f / dot;
+		glPointSize(2);
+		glBegin(GL_POINTS);
+		glColor3f(1.0f, 0.6f, 0.0f);
+		for (int i = -1; i < dot; i++) {
+			x = sin(alpha * i) * r;
+			y = cos(alpha * i) * r;
+			glVertex2f(x + 0.5f, y + 0.5f);
+		}
+		glEnd();
+	}
+
 	color ReColor::getColor() { return prevColor; }
 	void ReColor::reColor() {}
 	void ReColor::reColor(color newColor) {}
@@ -305,7 +320,7 @@ GameField::GameField(int mapH, int mapW) {
 			cell[x][y]->isSelect = true;
 			BlowUP();
 		}
-		if (rand() % 10 == 1) {
+		if (rand() % 20 == 1) {
 			if (rand() % 2) {
 				color resetColor = cell[x][y]->getColor();
 				if (y == mapH - 1) {
@@ -333,6 +348,49 @@ GameField::GameField(int mapH, int mapW) {
 			swap(cell[x][y], cell[x][y + 1]);
 		}
 		cell[x][y]->reColor();
+	}
+
+	void GameField::UpDownLeftRight(xy point, std::queue<xy>& positions, color rgb) {
+		if (point.x >= mapW || point.x < 0 || point.y >= mapH || point.y < 0) 
+			return;
+		if (cell[point.x][point.y]->isExplosion || cell[point.x][point.y]->isReColor || cell[point.x][point.y]->isChecked) {
+			cell[point.x][point.y]->isChecked = true;
+			return;
+		}
+		if (cell[point.x][point.y]->getColor() == rgb) {
+			cell[point.x][point.y]->isChecked = true;
+			positions.push(point);
+			UpDownLeftRight({ point.x + 1, point.y }, positions, rgb);
+			UpDownLeftRight({ point.x - 1, point.y }, positions, rgb);
+			UpDownLeftRight({ point.x, point.y + 1 }, positions, rgb);
+			UpDownLeftRight({ point.x, point.y - 1 }, positions, rgb);
+		}
+	}
+
+        void GameField::CheckCombinations() {
+		std::queue<xy> positions;
+		for (int y = mapH-1; y > -1; y--) {
+			for (int x = 0; x < mapW; x++) {
+				UpDownLeftRight({ x,y }, positions, cell[x][y]->getColor());
+				if (positions.size() > 2)
+				{
+					while (!positions.empty())
+					{
+						SmashOut(positions.front());
+						positions.pop();
+					}
+				}
+				else if (!positions.empty())
+				{
+					while (!positions.empty()) positions.pop();
+				}
+			}
+		}
+		for (int y = 0; y < mapH; y++) {
+			for (int x = 0; x < mapW; x++) {
+				cell[x][y]->isChecked = false;
+			}
+		}
 	}
 
 	void GameField::HorizontalCheck() {
