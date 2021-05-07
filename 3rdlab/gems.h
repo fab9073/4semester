@@ -86,7 +86,7 @@ public:
 	void BlowUP();
 
 	void SmashOut(xy position);
-        void UpDownLeftRight(xy startpos, std::queue<xy>& positions, color rgb);
+        void UpDownLeftRight(xy startpos, std::vector<xy>& positions, color rgb);
 	void CheckCombinations();
 	
 	void HorizontalCheck();
