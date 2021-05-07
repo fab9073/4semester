@@ -97,8 +97,7 @@ int WINAPI WinMain(HINSTANCE hInstance,
 
 			map->drawField();
 			map->swapGems();
-			map->VerticalCheck();
-			map->HorizontalCheck();
+			map->CheckCombinations();
 			map->BlowUP();
 			map->BonusReColor();
 
