@@ -21,6 +21,7 @@ struct color {
 class Element {
 public:
 	bool isSelect = false;
+	bool isChecked = false;
 	bool isExplosion = false;
 	bool isReColor = false;
 	virtual void DrawElement() = 0;
@@ -85,7 +86,9 @@ public:
 	void BlowUP();
 
 	void SmashOut(xy position);
+        void UpDownLeftRight(xy startpos, std::queue<xy>& positions, color rgb);
+	void CheckCombinations();
+	
 	void HorizontalCheck();
-
 	void VerticalCheck();
 };
