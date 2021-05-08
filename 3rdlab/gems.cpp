@@ -80,8 +80,6 @@ namespace rgb {
 		glEnd();
 	}
 
-	Bomb::Bomb() { is[EXPLOSION] = true; }
-
 	void Bomb::DrawElement() {
 		glBegin(GL_TRIANGLE_FAN);
 		glColor3f(0.5f, 0.5f, 0.5f);
@@ -124,7 +122,7 @@ namespace rgb {
 	void Bomb::reColor(color newColor) {}
 
 
-	ReColor::ReColor(color prev) { prevColor = prev; is[RECOLOR] = true; }
+	ReColor::ReColor(color prev) { prevColor = prev;}
 
 	void ReColor::DrawElement() {
 		glBegin(GL_TRIANGLE_FAN);
@@ -204,14 +202,24 @@ namespace rgb {
 	void ReColor::reColor() {}
 	void ReColor::reColor(color newColor) {}
 
+
+	bool Gem::isExplosion() { return false; }
+	bool Gem::isReColor() { return false; }
+
+	bool Bomb::isExplosion() { return true; }
+	bool Bomb::isReColor() { return false; }
+
+	bool ReColor::isExplosion() { return false; }
+	bool ReColor::isReColor() { return true; }
+
 bool operator==(const color& rgb1, const color& rgb2) {
 	return (rgb1.r == rgb2.r && rgb1.g == rgb2.g && rgb1.b == rgb2.b);
 }
 
 GameField::GameField(int mapH, int mapW) {
-		cell = new std::shared_ptr<Element>*[mapH];
-		for (int i = 0; i < mapH; i++) {
-			cell[i] = new std::shared_ptr<Element>[mapW];
+		cell = new std::shared_ptr<Element>*[mapW];
+		for (int i = 0; i < mapW; i++) {
+			cell[i] = new std::shared_ptr<Element>[mapH];
 		}
 
 		for (int x = 0; x < mapW; x++) {
@@ -265,9 +273,8 @@ GameField::GameField(int mapH, int mapW) {
 	void GameField::BonusReColor() {
 		for (int x = 0; x < mapW; x++) {
 			for (int y = 0; y < mapH; y++) {
-				if (cell[x][y]->is[SELECT] && cell[x][y]->is[RECOLOR]) {
+				if (cell[x][y]->is[SELECT] && cell[x][y]->isReColor()) {
 					cell[x][y]->is[SELECT] = false;
-					cell[x][y]->is[RECOLOR] = false;
 					color forChange = cell[x][y]->getColor();
 					cell[x][y].reset();
 					cell[x][y].reset(new Gem(forChange));
@@ -294,9 +301,8 @@ GameField::GameField(int mapH, int mapW) {
 		int x1, y1;
 		for (int x = 0; x < mapW; x++) {
 			for (int y = 0; y < mapH; y++) {
-				if (cell[x][y]->is[SELECT] && cell[x][y]->is[EXPLOSION]) {
+				if (cell[x][y]->is[SELECT] && cell[x][y]->isExplosion()) {
 					cell[x][y]->is[SELECT] = false;
-					cell[x][y]->is[EXPLOSION] = false;
 					cell[x][y].reset();
 					cell[x][y].reset(new Gem());
 					for (int y2 = y; y2 < mapH - 1; y2++)
@@ -316,7 +322,7 @@ GameField::GameField(int mapH, int mapW) {
 
 	void GameField::SmashOut(xy position) {
 		int x = position.x, y = position.y;
-		if (cell[x][y]->is[EXPLOSION]) {
+		if (cell[x][y]->isExplosion()) {
 			cell[x][y]->is[SELECT] = true;
 			BlowUP();
 		}
@@ -353,7 +359,7 @@ GameField::GameField(int mapH, int mapW) {
 	void GameField::UpDownLeftRight(xy point, std::vector<xy>& positions, color rgb) {
 		if (point.x >= mapW || point.x < 0 || point.y >= mapH || point.y < 0) 
 			return;
-		if (cell[point.x][point.y]->is[EXPLOSION] || cell[point.x][point.y]->is[RECOLOR] || cell[point.x][point.y]->is[CHECKED]) {
+		if (cell[point.x][point.y]->isExplosion() || cell[point.x][point.y]->isReColor() || cell[point.x][point.y]->is[CHECKED]) {
 			cell[point.x][point.y]->is[CHECKED] = true;
 			return;
 		}
