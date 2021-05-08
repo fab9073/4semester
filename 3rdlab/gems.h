@@ -88,7 +88,4 @@ public:
 	void SmashOut(xy position);
         void UpDownLeftRight(xy startpos, std::vector<xy>& positions, color rgb);
 	void CheckCombinations();
-	
-	void HorizontalCheck();
-	void VerticalCheck();
 };
