@@ -39,7 +39,7 @@ class Gem : public Element {
 public:
 	Gem();
 	Gem(color newColor);
-	~Gem();
+	
 	color getColor();
 	void DrawFrame();
 	void reColor();
