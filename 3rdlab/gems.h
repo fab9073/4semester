@@ -18,12 +18,14 @@ struct color {
 	float r, g, b;
 };
 
+enum isCases {
+	SELECT, CHECKED,
+	EXPLOSION, RECOLOR
+};
+
 class Element {
 public:
-	bool isSelect = false;
-	bool isChecked = false;
-	bool isExplosion = false;
-	bool isReColor = false;
+	std::vector<bool> is = { false, false, false, false };
 	virtual void DrawElement() = 0;
 	virtual void DrawFrame() = 0;
 	virtual color getColor() = 0;
