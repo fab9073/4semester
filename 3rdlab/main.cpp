@@ -135,11 +135,11 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		int x = int(pf.x);
 		int y = int(pf.y);
 		if (IsCellInMap(x, y)) {
-			if (map->cell[x][y]->isSelect) {
-				map->cell[x][y]->isSelect = false;
+			if (map->cell[x][y]->is[SELECT]) {
+				map->cell[x][y]->is[SELECT] = false;
 			}
 			else {
-				map->cell[x][y]->isSelect = true;
+				map->cell[x][y]->is[SELECT] = true;
 			}
 		}
 	}
