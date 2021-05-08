@@ -15,7 +15,7 @@ namespace rgb {
 
 	Gem::Gem() { gemColor = rgb::palette[2 + rand() % (6)]; }
 	Gem::Gem(color newColor) { gemColor = newColor; }
-	Gem::~Gem() {};
+
 	color Gem::getColor() { return gemColor; }
 	void Gem::reColor() { gemColor = rgb::palette[2 + rand() % (6)]; }
 	void Gem::reColor(color newColor) { gemColor = newColor; }
@@ -80,7 +80,7 @@ namespace rgb {
 		glEnd();
 	}
 
-	Bomb::Bomb() { isExplosion = true; }
+	Bomb::Bomb() { is[EXPLOSION] = true; }
 
 	void Bomb::DrawElement() {
 		glBegin(GL_TRIANGLE_FAN);
@@ -124,7 +124,7 @@ namespace rgb {
 	void Bomb::reColor(color newColor) {}
 
 
-	ReColor::ReColor(color prev) { prevColor = prev; isReColor = true; }
+	ReColor::ReColor(color prev) { prevColor = prev; is[RECOLOR] = true; }
 
 	void ReColor::DrawElement() {
 		glBegin(GL_TRIANGLE_FAN);
@@ -233,7 +233,7 @@ GameField::GameField(int mapH, int mapW) {
 				glPushMatrix();
 				glTranslatef(float(x), float(y), 0);
 				cell[x][y]->DrawElement();
-				if (cell[x][y]->isSelect)
+				if (cell[x][y]->is[SELECT])
 					cell[x][y]->DrawFrame();
 				glPopMatrix();
 			}
@@ -244,17 +244,17 @@ GameField::GameField(int mapH, int mapW) {
 		int dx = 1, dy = 1;
 		for (int x = 0; x < mapW; x++) {
 			for (int y = 0; y < mapH; y++) {
-				if (cell[x][y]->isSelect) {
-					if (x != mapW - 1 && cell[x + dx][y]->isSelect)
+				if (cell[x][y]->is[SELECT]) {
+					if (x != mapW - 1 && cell[x + dx][y]->is[SELECT])
 					{
-						cell[x][y]->isSelect = false;
-						cell[x + dx][y]->isSelect = false;
+						cell[x][y]->is[SELECT] = false;
+						cell[x + dx][y]->is[SELECT] = false;
 						swap(cell[x][y], cell[x + dx][y]);
 					}
-					else if (y != mapH - 1 && cell[x][y + dy]->isSelect)
+					else if (y != mapH - 1 && cell[x][y + dy]->is[SELECT])
 					{
-						cell[x][y]->isSelect = false;
-						cell[x][y + dy]->isSelect = false;
+						cell[x][y]->is[SELECT] = false;
+						cell[x][y + dy]->is[SELECT] = false;
 						swap(cell[x][y], cell[x][y + dy]);
 					}
 				}
@@ -265,9 +265,9 @@ GameField::GameField(int mapH, int mapW) {
 	void GameField::BonusReColor() {
 		for (int x = 0; x < mapW; x++) {
 			for (int y = 0; y < mapH; y++) {
-				if (cell[x][y]->isSelect && cell[x][y]->isReColor) {
-					cell[x][y]->isSelect = false;
-					cell[x][y]->isReColor = false;
+				if (cell[x][y]->is[SELECT] && cell[x][y]->is[RECOLOR]) {
+					cell[x][y]->is[SELECT] = false;
+					cell[x][y]->is[RECOLOR] = false;
 					color forChange = cell[x][y]->getColor();
 					cell[x][y].reset();
 					cell[x][y].reset(new Gem(forChange));
@@ -294,9 +294,9 @@ GameField::GameField(int mapH, int mapW) {
 		int x1, y1;
 		for (int x = 0; x < mapW; x++) {
 			for (int y = 0; y < mapH; y++) {
-				if (cell[x][y]->isSelect && cell[x][y]->isExplosion) {
-					cell[x][y]->isSelect = false;
-					cell[x][y]->isExplosion = false;
+				if (cell[x][y]->is[SELECT] && cell[x][y]->is[EXPLOSION]) {
+					cell[x][y]->is[SELECT] = false;
+					cell[x][y]->is[EXPLOSION] = false;
 					cell[x][y].reset();
 					cell[x][y].reset(new Gem());
 					for (int y2 = y; y2 < mapH - 1; y2++)
@@ -316,8 +316,8 @@ GameField::GameField(int mapH, int mapW) {
 
 	void GameField::SmashOut(xy position) {
 		int x = position.x, y = position.y;
-		if (cell[x][y]->isExplosion) {
-			cell[x][y]->isSelect = true;
+		if (cell[x][y]->is[EXPLOSION]) {
+			cell[x][y]->is[SELECT] = true;
 			BlowUP();
 		}
 		if (rand() % 20 == 1) {
@@ -353,12 +353,12 @@ GameField::GameField(int mapH, int mapW) {
 	void GameField::UpDownLeftRight(xy point, std::vector<xy>& positions, color rgb) {
 		if (point.x >= mapW || point.x < 0 || point.y >= mapH || point.y < 0) 
 			return;
-		if (cell[point.x][point.y]->isExplosion || cell[point.x][point.y]->isReColor || cell[point.x][point.y]->isChecked) {
-			cell[point.x][point.y]->isChecked = true;
+		if (cell[point.x][point.y]->is[EXPLOSION] || cell[point.x][point.y]->is[RECOLOR] || cell[point.x][point.y]->is[CHECKED]) {
+			cell[point.x][point.y]->is[CHECKED] = true;
 			return;
 		}
 		if (cell[point.x][point.y]->getColor() == rgb) {
-			cell[point.x][point.y]->isChecked = true;
+			cell[point.x][point.y]->is[CHECKED] = true;
 			positions.push_back(point);
 			UpDownLeftRight({ point.x + 1, point.y }, positions, rgb);
 			UpDownLeftRight({ point.x - 1, point.y }, positions, rgb);
@@ -371,7 +371,7 @@ GameField::GameField(int mapH, int mapW) {
 		return point1.y < point2.y;
 	}
 
-        void GameField::CheckCombinations() {
+	void GameField::CheckCombinations() {
 		std::vector<xy> positions;
 		for (int y = mapH-1; y > -1; y--) {
 			for (int x = 0; x < mapW; x++) {
@@ -387,14 +387,13 @@ GameField::GameField(int mapH, int mapW) {
 				}
 				else if (!positions.empty())
 				{
-					while (!positions.empty())
-						positions.pop_back();
+					while (!positions.empty()) positions.pop_back();
 				}
 			}
 		}
 		for (int y = 0; y < mapH; y++) {
 			for (int x = 0; x < mapW; x++) {
-				cell[x][y]->isChecked = false;
+				cell[x][y]->is[CHECKED] = false;
 			}
 		}
 	}
