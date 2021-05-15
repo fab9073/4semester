@@ -63,13 +63,15 @@ void GameField::ReplaceElements() {
 
 const int BonusChance = 20;
 
+const int BombOrRecolor = 2;
+
 void GameField::SmashOut(xy position) {
 	int x = position.x, y = position.y;
 	cell[x][y]->is[SELECT] = true;
 	cell[x][y]->UseBonus(this, cell[x][y], position);
 
 	if (rand() % BonusChance == 1) {
-		if (rand() % 2) {
+		if (rand() % BombOrRecolor) {
 			color resetColor = cell[x][y]->GetColor();
 			if (y == mapH - 1) {
 				cell[x][y].reset();
