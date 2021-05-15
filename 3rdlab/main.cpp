@@ -1,4 +1,4 @@
-#include "gems.h"
+#include "gamefield.h"
 
 void ScreenToOpenGL(HWND hwnd, int x, int y, float* ox, float* oy) {
 	RECT rct;
@@ -68,9 +68,10 @@ int WINAPI WinMain(HINSTANCE hInstance,
 
 	/* enable OpenGL for the window */
 	EnableOpenGL(hwnd, &hDC, &hRC);
-	map = new GameField(mapH, mapW);
 
-	//Elem* a = new Elem(BLUE, { 1,1 });
+	map = new GameField(mapH, mapW);
+	//std::shared_ptr<Element> test = std::make_shared<Gem>(Gem());
+
 	/* program main loop */
 	while (!bQuit)
 	{
@@ -95,12 +96,11 @@ int WINAPI WinMain(HINSTANCE hInstance,
 			glClearColor(0.0f, 0.7f, 1.0f, 0.0f);
 			glClear(GL_COLOR_BUFFER_BIT);
 
-			map->drawField();
-			map->swapGems();
+			map->DrawField();
+			map->ReplaceElements();
 			map->CheckCombinations();
-			map->BlowUP();
-			map->BonusReColor();
-
+			map->BonusesUsing();
+			
 			SwapBuffers(hDC);
 
 			Sleep(200);
@@ -135,12 +135,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		int x = int(pf.x);
 		int y = int(pf.y);
 		if (IsCellInMap(x, y)) {
-			if (map->cell[x][y]->is[SELECT]) {
-				map->cell[x][y]->is[SELECT] = false;
-			}
-			else {
-				map->cell[x][y]->is[SELECT] = true;
-			}
+			map->SelectCell(x, y);
 		}
 	}
 
