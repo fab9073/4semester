@@ -106,16 +106,18 @@ int WINAPI WinMain(HINSTANCE hInstance,
 			}
 			if (Game.bonusBall != nullptr) {
 				Game.bonusBall->DrawObj();
+				Game.bonusBall->DestroyBricks(Game.bricks, Game.bonuses, Game.score);
 				if (Game.bonusBall->Move(Game.carriage)) {
 					delete Game.bonusBall;
 					Game.bonusBall = nullptr;
 				}
-				Game.bonusBall->DestroyBricks(Game.bricks, Game.bonuses, Game.score);
 			}
-			Game.ball.DrawObj();
-			if (Game.ball.Move(Game.carriage))
+			Game.ball->DrawObj();
+			if (Game.ball->Move(Game.carriage))
 			{
+				delete Game.ball;
 				Game.lifes.pop_back();
+				Game.ball = new TBall();
 				if (Game.lifes.empty())
 				{
 					break;
