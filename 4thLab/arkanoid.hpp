@@ -10,7 +10,7 @@ const int windowH = 512;
 
 class Arkanoid {
 public:
-	TBall ball;
+	TBall* ball;
 	TBall* bonusBall = nullptr;
 	TCarriage carriage;
 	std::vector<TBall*> lifes;
