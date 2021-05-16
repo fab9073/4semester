@@ -5,6 +5,7 @@
 Arkanoid::Arkanoid() {
 	InitBricks();
 	InitLifes();
+	ball = new TBall();
 }
 
 void Arkanoid::DrawFrames() {
