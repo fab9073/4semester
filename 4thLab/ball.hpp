@@ -26,9 +26,9 @@ public:
 	void setdy(float K);
 
 
-	bool CarriageCollision(TCarriage carriage);
+	bool CarriageCollision(TCarriage& carriage);
 	bool BrickCollision(TBrick& brick, int& score);
 	void DestroyBricks(std::vector <TBrick*>& bricks, std::vector<TBonus*>& bonuses, int& score);
-	bool Move(TCarriage carriage);
+	bool Move(TCarriage& carriage);
 	
 };
