@@ -26,7 +26,7 @@ void TBall::DrawObj() {
 	glEnd();
 }
 
-bool TBall::CarriageCollision(TCarriage carriage) {
+bool TBall::CarriageCollision(TCarriage& carriage) {
 	if ((y - radius + 0.01f > carriage.getY() 
 		&& y - radius - 0.01f < carriage.getY()) &&
 		(x > carriage.getX() - carriage.getLength() &&
@@ -108,7 +108,7 @@ void TBall::DestroyBricks(std::vector <TBrick*>& bricks, std::vector<TBonus*>& b
 
 }
 
-bool TBall::Move(TCarriage carriage) {
+bool TBall::Move(TCarriage& carriage) {
 	x += dx;
 	y += dy;
 
