@@ -1,3 +1,4 @@
+#pragma once
 #include "ball.hpp"
 
 TBall::TBall() { x = 0; y = -0.9f; }
@@ -26,7 +27,8 @@ void TBall::DrawObj() {
 }
 
 bool TBall::CarriageCollision(TCarriage carriage) {
-	if (y - radius == carriage.getY() &&
+	if ((y - radius + 0.01f > carriage.getY() 
+		&& y - radius - 0.01f < carriage.getY()) &&
 		(x > carriage.getX() - carriage.getLength() &&
 			x < carriage.getX() + carriage.getLength())) {
 		dy *= -1;
@@ -35,43 +37,67 @@ bool TBall::CarriageCollision(TCarriage carriage) {
 	return false;
 }
 
+
 bool TBall::BrickCollision(TBrick& brick) {
-	if ((brick.getY() - 0.5f * brick.getHeight() - 0.001f < y + radius
-		&& brick.getY() - 0.5f * brick.getHeight() + 0.001f > y + radius)
-		|| (brick.getY() + 0.5f * brick.getHeight() - 0.001f < y - radius
-			&& brick.getY() + 0.5f * brick.getHeight() + 0.001f > y - radius))
+	if ((brick.getY() - 0.5f * brick.getHeight() - 0.01f < y + radius
+		&& brick.getY() - 0.5f * brick.getHeight() + 0.01f > y + radius)
+		|| (brick.getY() + 0.5f * brick.getHeight() - 0.01f < y - radius
+		    && brick.getY() + 0.5f * brick.getHeight() + 0.01f > y - radius))
 	{
-		if ((x - radius < brick.getX() - 0.5f * brick.getWidth() 
-			&& x + radius > brick.getX() - 0.5f * brick.getWidth()) 
-			|| ((x - radius < brick.getX() + 0.5f * brick.getWidth())
-			   && x + radius > brick.getX() + 0.5f * brick.getWidth()))
+		if ((x - radius <= brick.getX() - 0.5f * brick.getWidth() 
+			&& x + radius >= brick.getX() - 0.5f * brick.getWidth()) 
+			|| ((x - radius <= brick.getX() + 0.5f * brick.getWidth())
+			   && x + radius >= brick.getX() + 0.5f * brick.getWidth()))
 		{
 			dy *= -1;
-			return true;
+			return brick.XtraPower(*this);
 		}
 	}
-	if ((brick.getX() - 0.5f * brick.getWidth() - 0.001f < x + radius
-		&& brick.getX() - 0.5f * brick.getWidth() + 0.001f > x + radius)
-		|| (brick.getX() + 0.5f * brick.getWidth() - 0.001f < x - radius
-			&& brick.getX() + 0.5f * brick.getWidth() + 0.001f > x - radius)) 
+	if ((brick.getX() - 0.5f * brick.getWidth() - 0.01f < x + radius
+		&& brick.getX() - 0.5f * brick.getWidth() + 0.01f > x + radius)
+		|| (brick.getX() + 0.5f * brick.getWidth() - 0.01f < x - radius
+			&& brick.getX() + 0.5f * brick.getWidth() + 0.01f > x - radius)) 
 	{
-		if ((y - radius < brick.getY() - 0.5f * brick.getHeight()
-			&& y + radius > brick.getY() - 0.5f * brick.getHeight())
-			|| ((y - radius < brick.getY() + 0.5f * brick.getHeight())
-				&& y + radius > brick.getY() + 0.5f * brick.getHeight()))
-		{
+		if ((y - radius <= brick.getY() - 0.5f * brick.getHeight()
+			&& y + radius >= brick.getY() - 0.5f * brick.getHeight())
+			|| ((y - radius <= brick.getY() + 0.5f * brick.getHeight())
+				&& y + radius >= brick.getY() + 0.5f * brick.getHeight()))
+		{ 
 			dx *= -1;
-			return true;
+			return brick.XtraPower(*this);
 		}
 	}
-
+	if ((x + radius + 0.001f > brick.getX() - 0.5f * brick.getWidth() && x + radius - 0.01f < brick.getX() - 0.5f * brick.getWidth()
+		&&
+		y - radius + 0.001f > brick.getY() + 0.5f * brick.getHeight() && y - radius + 0.01f < brick.getY() + 0.5f * brick.getHeight())
+		||
+		(x - radius + 0.001f > brick.getX() + 0.5f * brick.getWidth() && x - radius - 0.01f < brick.getX() + 0.5f * brick.getWidth()
+			&&
+			y - radius + 0.001f > brick.getY() + 0.5f * brick.getHeight() && y - radius + 0.01f < brick.getY() + 0.5f * brick.getHeight())
+		||
+		(x - radius + 0.001f > brick.getX() + 0.5f * brick.getWidth() && x - radius - 0.01f < brick.getX() + 0.5f * brick.getWidth()
+			&&
+			y + radius + 0.001f > brick.getY() - 0.5f * brick.getHeight() && y + radius - 0.01f < brick.getY() - 0.5f * brick.getHeight())
+		||
+		((x + radius + 0.001f > brick.getX() - 0.5f * brick.getWidth() && x + radius - 0.01f < brick.getX() - 0.5f * brick.getWidth()
+			&&
+			y + radius + 0.001f > brick.getY() - 0.5f * brick.getHeight() && y + radius - 0.01f < brick.getY() - 0.5f * brick.getHeight()))) {
+		dx *= -1;
+		dy *= -1;
+		return brick.XtraPower(*this);
+	}
 	return false;
 }
 
-void TBall::DestroyBricks(std::vector <TBrick*>& bricks) {
+const int bonusChance = 5;
+
+void TBall::DestroyBricks(std::vector <TBrick*>& bricks, std::vector<TBonus*>& bonuses) {
 	std::vector<TBrick*>::iterator it = bricks.begin();
 	for (; it != bricks.end(); it++) {
 		if (BrickCollision(**it)) {
+			if (rand() % bonusChance == 1) {
+				bonuses.push_back(new TBonus((*it)->getX(), (*it)->getY()));
+			}
 			bricks.erase(it);
 			return;
 		}
@@ -95,11 +121,11 @@ bool TBall::Move(TCarriage carriage) {
 		dy *= -1;
 		return false;
 	}
-	if (x < radius - 1) {
+	if (x + 0.05f < radius - 1) {
 		dx *= -1;
 		return false;
 	}
-	if (x > 1 - radius) {
+	if (x - 0.05f > 1 - radius) {
 		dx *= -1;
 		return false;
 	}

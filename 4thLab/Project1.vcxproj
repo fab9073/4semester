@@ -142,6 +142,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="ball.cpp" />
+    <ClCompile Include="bonus.cpp" />
     <ClCompile Include="bricks.cpp" />
     <ClCompile Include="carriage.cpp" />
     <ClCompile Include="carriage.hpp" />
@@ -149,6 +150,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ball.hpp" />
+    <ClInclude Include="bonus.hpp" />
     <ClInclude Include="bricks.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

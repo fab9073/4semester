@@ -1,6 +1,7 @@
 #include "carriage.hpp"
 #include "ball.hpp"
 #include "bricks.hpp"
+#include "bonus.hpp"
 #include <vector>
 
 int windowW = 768;
@@ -36,14 +37,44 @@ void InitBricks(std::vector <TBrick*>& bricks){
 	float startY = 0.8f;
 	for (int i = 0; i < 5; i++) {
 		for (int j = 0; j < 10; j++) {
-			bricks.push_back(new TBrick(startX + j * 0.2f, startY - i * 0.1f));
+			if (i == 2 && j > 1 && j < 8) {
+				bricks.push_back(new TBrickUnbrkbl(startX + j * 0.2f, startY - i * 0.1f));
+			}
+			else if (j == 0 || j == 9) {
+				bricks.push_back(new TBrickSpeedup(startX + j * 0.2f, startY - i * 0.1f));
+			}
+			else {
+				bricks.push_back(new TBrick(startX + j * 0.2f, startY - i * 0.1f));
+			}
 		}
 	}
 }
+
 void DrawBricks(std::vector<TBrick*>& bricks) {
 	std::vector<TBrick*>::iterator it = bricks.begin();
 	for (; it != bricks.end(); it++) {
 		(*it)->DrawObj();
+	}
+}
+
+void MoveBricks(std::vector<TBrick*>& bricks) {
+	std::vector<TBrick*>::iterator it = bricks.begin();
+	for (; it != bricks.end(); it++) {
+		(*it)->Move();
+	}
+}
+
+void DrawBonuses(std::vector<TBonus*>& bonuses) {
+	std::vector<TBonus*>::iterator it = bonuses.begin();
+	for (; it != bonuses.end(); it++) {
+		(*it)->DrawObj();
+	}
+}
+
+void MoveBonuses(std::vector<TBonus*>& bonuses) {
+	std::vector<TBonus*>::iterator it = bonuses.begin();
+	for (; it != bonuses.end(); it++) {
+		(*it)->Move();
 	}
 }
 
@@ -100,9 +131,14 @@ int WINAPI WinMain(HINSTANCE hInstance,
 	glScalef(float(windowH) / float(windowW), 1, 1);
 
 	TBall ball;
+	TBall* bonusBall = nullptr;
 	TCarriage carriage;
 	std::vector<TBall*> lifes;
 	std::vector <TBrick*> bricks;
+	std::vector<TBonus*> bonuses;
+
+	const int BonusBallChance = 2;
+
 	InitBricks(bricks);
 	InitLifes(lifes);
 	/* program main loop */
@@ -131,6 +167,29 @@ int WINAPI WinMain(HINSTANCE hInstance,
 			DrawFrames();
 			DrawBricks(bricks);
 			DrawLifes(lifes);
+			DrawBonuses(bonuses);
+			MoveBricks(bricks);
+			MoveBonuses(bonuses);
+			if (carriage.TakeBonus(bonuses)) 
+			{
+				if (rand() % BonusBallChance == 1 && bonusBall == nullptr) 
+				{
+					if (bonusBall == nullptr)
+						bonusBall = new TBall();
+				}
+				else 
+				{
+					bricks.push_back(new TBrickFlying());
+				}
+			}
+			if (bonusBall != nullptr) {
+				bonusBall->DrawObj();
+				if (bonusBall->Move(carriage)) {
+					delete bonusBall;
+					bonusBall = nullptr;
+				}
+				bonusBall->DestroyBricks(bricks, bonuses);
+			}
 			ball.DrawObj();
 			if (ball.Move(carriage))
 			{
@@ -140,7 +199,7 @@ int WINAPI WinMain(HINSTANCE hInstance,
 					break;
 				}
 			}
-			ball.DestroyBricks(bricks);
+			ball.DestroyBricks(bricks, bonuses);
 			carriage.DrawObj();
 			carriage.Move('A', 'D', -1, 1);
 			SwapBuffers(hDC);
