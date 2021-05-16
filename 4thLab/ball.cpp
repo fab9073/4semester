@@ -27,10 +27,15 @@ void TBall::DrawObj() {
 }
 
 bool TBall::CarriageCollision(TCarriage& carriage) {
-	if ((y - radius + 0.01f > carriage.getY() 
+	if ((y - radius + 0.01f > carriage.getY()
 		&& y - radius - 0.01f < carriage.getY()) &&
-		(x > carriage.getX() - carriage.getLength() &&
-			x < carriage.getX() + carriage.getLength())) {
+		(((x - radius <= carriage.getX() - carriage.getLength()
+			&& x + radius >= carriage.getX() - carriage.getLength())
+		|| ((x - radius <= carriage.getX() + carriage.getLength())
+			&& x + radius >= carriage.getX() + carriage.getLength()))
+		|| (x > carriage.getX() - carriage.getLength() &&
+			x < carriage.getX() + carriage.getLength())))
+	{
 		dy *= -1;
 		return true;
 	}
