@@ -1,82 +1,12 @@
-#include "carriage.hpp"
-#include "ball.hpp"
-#include "bricks.hpp"
-#include "bonus.hpp"
-#include <vector>
+#include "arkanoid.hpp"
 
-int windowW = 768;
-int windowH = 512;
+
 
 LRESULT CALLBACK WindowProc(HWND, UINT, WPARAM, LPARAM);
 void EnableOpenGL(HWND hwnd, HDC*, HGLRC*);
 void DisableOpenGL(HWND, HDC, HGLRC);
-void DrawFrames() {
-	glBegin(GGL_STRING);
-	glColor3f(1, 1, 1);
-	glVertex2f(-1, -1);
-	glVertex2f(-1, 1);
-	glVertex2f(1, 1);
-	glVertex2f(1, -1);
-	glEnd();
-}
 
 
-void DrawLifes(std::vector<TBall*>& lifes) {
-	std::vector<TBall*>::iterator it = lifes.begin();
-	for (; it != lifes.end(); it++) {
-		(*it)->DrawObj();
-	}
-}
-void InitLifes(std::vector<TBall*>& lifes) {
-	for (int k = 0; k < 3; k++) {
-		lifes.push_back(new TBall(-1.1f - k * 0.1f, 0.9f));
-	}
-}
-void InitBricks(std::vector <TBrick*>& bricks){
-	float startX = -0.9f;
-	float startY = 0.8f;
-	for (int i = 0; i < 5; i++) {
-		for (int j = 0; j < 10; j++) {
-			if (i == 2 && j > 1 && j < 8) {
-				bricks.push_back(new TBrickUnbrkbl(startX + j * 0.2f, startY - i * 0.1f));
-			}
-			else if (j == 0 || j == 9) {
-				bricks.push_back(new TBrickSpeedup(startX + j * 0.2f, startY - i * 0.1f));
-			}
-			else {
-				bricks.push_back(new TBrick(startX + j * 0.2f, startY - i * 0.1f));
-			}
-		}
-	}
-}
-
-void DrawBricks(std::vector<TBrick*>& bricks) {
-	std::vector<TBrick*>::iterator it = bricks.begin();
-	for (; it != bricks.end(); it++) {
-		(*it)->DrawObj();
-	}
-}
-
-void MoveBricks(std::vector<TBrick*>& bricks) {
-	std::vector<TBrick*>::iterator it = bricks.begin();
-	for (; it != bricks.end(); it++) {
-		(*it)->Move();
-	}
-}
-
-void DrawBonuses(std::vector<TBonus*>& bonuses) {
-	std::vector<TBonus*>::iterator it = bonuses.begin();
-	for (; it != bonuses.end(); it++) {
-		(*it)->DrawObj();
-	}
-}
-
-void MoveBonuses(std::vector<TBonus*>& bonuses) {
-	std::vector<TBonus*>::iterator it = bonuses.begin();
-	for (; it != bonuses.end(); it++) {
-		(*it)->Move();
-	}
-}
 
 int WINAPI WinMain(HINSTANCE hInstance,
 	HINSTANCE hPrevInstance,
@@ -130,17 +60,8 @@ int WINAPI WinMain(HINSTANCE hInstance,
 
 	glScalef(float(windowH) / float(windowW), 1, 1);
 
-	TBall ball;
-	TBall* bonusBall = nullptr;
-	TCarriage carriage;
-	std::vector<TBall*> lifes;
-	std::vector <TBrick*> bricks;
-	std::vector<TBonus*> bonuses;
+	Arkanoid Game;
 
-	const int BonusBallChance = 2;
-
-	InitBricks(bricks);
-	InitLifes(lifes);
 	/* program main loop */
 	while (!bQuit)
 	{
@@ -164,44 +85,46 @@ int WINAPI WinMain(HINSTANCE hInstance,
 
 			glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 			glClear(GL_COLOR_BUFFER_BIT);
-			DrawFrames();
-			DrawBricks(bricks);
-			DrawLifes(lifes);
-			DrawBonuses(bonuses);
-			MoveBricks(bricks);
-			MoveBonuses(bonuses);
-			if (carriage.TakeBonus(bonuses)) 
+			Game.DrawFrames();
+			Game.DrawBricks();
+			Game.DrawLifes();
+			Game.DrawBonuses();
+			Game.MoveBricks();
+			Game.MoveBonuses();
+			
+			if (Game.carriage.TakeBonus(Game.bonuses)) 
 			{
-				if (rand() % BonusBallChance == 1 && bonusBall == nullptr) 
+				if (rand() % Game.BonusBallChance == 1 && Game.bonusBall == nullptr) 
 				{
-					if (bonusBall == nullptr)
-						bonusBall = new TBall();
+					if (Game.bonusBall == nullptr)
+						Game.bonusBall = new TBall();
 				}
 				else 
 				{
-					bricks.push_back(new TBrickFlying());
+					Game.bricks.push_back(new TBrickFlying());
 				}
 			}
-			if (bonusBall != nullptr) {
-				bonusBall->DrawObj();
-				if (bonusBall->Move(carriage)) {
-					delete bonusBall;
-					bonusBall = nullptr;
+			if (Game.bonusBall != nullptr) {
+				Game.bonusBall->DrawObj();
+				if (Game.bonusBall->Move(Game.carriage)) {
+					delete Game.bonusBall;
+					Game.bonusBall = nullptr;
 				}
-				bonusBall->DestroyBricks(bricks, bonuses);
+				Game.bonusBall->DestroyBricks(Game.bricks, Game.bonuses, Game.score);
 			}
-			ball.DrawObj();
-			if (ball.Move(carriage))
+			Game.ball.DrawObj();
+			if (Game.ball.Move(Game.carriage))
 			{
-				lifes.pop_back();
-				if (lifes.empty()) 
+				Game.lifes.pop_back();
+				if (Game.lifes.empty())
 				{
 					break;
 				}
 			}
-			ball.DestroyBricks(bricks, bonuses);
-			carriage.DrawObj();
-			carriage.Move('A', 'D', -1, 1);
+			Game.ball.DestroyBricks(Game.bricks, Game.bonuses, Game.score);
+			Game.carriage.DrawObj();
+			Game.carriage.Move('A', 'D', -1, 1);
+			Game.ShowScore();
 			SwapBuffers(hDC);
 
 			Sleep(10);

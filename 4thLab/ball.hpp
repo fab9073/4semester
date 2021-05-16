@@ -27,8 +27,8 @@ public:
 
 
 	bool CarriageCollision(TCarriage carriage);
-	bool BrickCollision(TBrick& brick);
-	void DestroyBricks(std::vector <TBrick*>& bricks, std::vector<TBonus*>& bonuses);
+	bool BrickCollision(TBrick& brick, int& score);
+	void DestroyBricks(std::vector <TBrick*>& bricks, std::vector<TBonus*>& bonuses, int& score);
 	bool Move(TCarriage carriage);
 	
 };

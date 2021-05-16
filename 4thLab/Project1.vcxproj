@@ -141,6 +141,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="arkanoid.cpp" />
     <ClCompile Include="ball.cpp" />
     <ClCompile Include="bonus.cpp" />
     <ClCompile Include="bricks.cpp" />
@@ -149,6 +150,7 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="arkanoid.hpp" />
     <ClInclude Include="ball.hpp" />
     <ClInclude Include="bonus.hpp" />
     <ClInclude Include="bricks.hpp" />

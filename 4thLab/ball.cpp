@@ -38,7 +38,7 @@ bool TBall::CarriageCollision(TCarriage carriage) {
 }
 
 
-bool TBall::BrickCollision(TBrick& brick) {
+bool TBall::BrickCollision(TBrick& brick, int& score) {
 	if ((brick.getY() - 0.5f * brick.getHeight() - 0.01f < y + radius
 		&& brick.getY() - 0.5f * brick.getHeight() + 0.01f > y + radius)
 		|| (brick.getY() + 0.5f * brick.getHeight() - 0.01f < y - radius
@@ -50,6 +50,7 @@ bool TBall::BrickCollision(TBrick& brick) {
 			   && x + radius >= brick.getX() + 0.5f * brick.getWidth()))
 		{
 			dy *= -1;
+			score++;
 			return brick.XtraPower(*this);
 		}
 	}
@@ -64,6 +65,7 @@ bool TBall::BrickCollision(TBrick& brick) {
 				&& y + radius >= brick.getY() + 0.5f * brick.getHeight()))
 		{ 
 			dx *= -1;
+			score++;
 			return brick.XtraPower(*this);
 		}
 	}
@@ -84,17 +86,18 @@ bool TBall::BrickCollision(TBrick& brick) {
 			y + radius + 0.001f > brick.getY() - 0.5f * brick.getHeight() && y + radius - 0.01f < brick.getY() - 0.5f * brick.getHeight()))) {
 		dx *= -1;
 		dy *= -1;
+		score++;
 		return brick.XtraPower(*this);
 	}
 	return false;
 }
 
-const int bonusChance = 5;
+const int bonusChance = 4;
 
-void TBall::DestroyBricks(std::vector <TBrick*>& bricks, std::vector<TBonus*>& bonuses) {
+void TBall::DestroyBricks(std::vector <TBrick*>& bricks, std::vector<TBonus*>& bonuses, int& score) {
 	std::vector<TBrick*>::iterator it = bricks.begin();
 	for (; it != bricks.end(); it++) {
-		if (BrickCollision(**it)) {
+		if (BrickCollision(**it, score)) {
 			if (rand() % bonusChance == 1) {
 				bonuses.push_back(new TBonus((*it)->getX(), (*it)->getY()));
 			}
