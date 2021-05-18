@@ -33,16 +33,16 @@ void QuadEq::calcSolQuadEq(int caseDis) {
 void QuadEq::solveQuadEq() { calcSolQuadEq(checkDiscriminant()); }
 
 void QuadEq::printQuadEq() {
-	std::cout << "Entered Quadratic Equality:" << std::endl;
-	if (abc->coeff[A] != 0)	std::cout << abc->coeff[A] << "x^2";
+	cout << "Entered Quadratic Equality:" << endl;
+	if (abc->coeff[A] != 0)	cout << abc->coeff[A] << "x^2";
 
-	if (abc->coeff[B] < 0) 	std::cout << " - " << fabs(abc->coeff[B]) << "x";
-	else if (abc->coeff[B] > 0) std::cout << " + " << abc->coeff[B] << "x";
+	if (abc->coeff[B] < 0) 	cout << " - " << fabs(abc->coeff[B]) << "x";
+	else if (abc->coeff[B] > 0) cout << " + " << abc->coeff[B] << "x";
 
-	if (abc->coeff[C] < 0) std::cout << " - " << fabs(abc->coeff[C]);
-	else if (abc->coeff[C] > 0) std::cout << " + " << abc->coeff[C];
+	if (abc->coeff[C] < 0) cout << " - " << fabs(abc->coeff[C]);
+	else if (abc->coeff[C] > 0) cout << " + " << abc->coeff[C];
 
-	std::cout << " = 0" << std::endl << std::endl;
+	cout << " = 0" << endl << endl;
 }
 
 void QuadEq::getQuadEqSol() {
@@ -50,10 +50,10 @@ void QuadEq::getQuadEqSol() {
 		return;
 	}
 	else if (checkDiscriminant() == oneSol) {
-		std::cout << "Solution of Quadratic Equaliation:" << std::endl << "x = " << solution[0] << std::endl << std::endl;
+		cout << "Solution of Quadratic Equaliation:" << endl << "x = " << solution[0] << endl << endl;
 	}
 	else if (checkDiscriminant() == twoSols) {
-		std::cout << "Solutions of Quadratic Equaliation:" << std::endl << "x1 = " << solution[0] << std::endl << "x2 = " << solution[1] << std::endl << std::endl;
+		cout << "Solutions of Quadratic Equaliation:" << endl << "x1 = " << solution[0] << endl << "x2 = " << solution[1] << endl << endl;
 	}
 }
 
