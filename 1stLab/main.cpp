@@ -1,4 +1,4 @@
-#include <../../coeffs.hpp>
+#include "quadeq.hpp"
 
 int main(void) {
 	QuadEq equality = QuadEq();

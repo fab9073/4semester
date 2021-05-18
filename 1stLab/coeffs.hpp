@@ -1,7 +1,7 @@
 #pragma once
+#pragma once
 #include <iostream>
 #include <cmath>
-using namespace std;
 
 int const quadEq = 3;
 
@@ -27,25 +27,3 @@ public:
 	void printCoeffs();
 };
 
-class QuadEq {
-public:
-	QuadEq();
-
-	void FullSolvingQuadraticalEquation();
-
-private:
-	Coeffs* abc;
-	double* solution;
-	double discriminant;
-
-	void calcDiscriminant();
-
-	int checkDiscriminant();
-
-	void calcSolQuadEq(int caseDis);
-	void solveQuadEq();
-
-	void printQuadEq();
-	void getQuadEqSol();
-
-};
