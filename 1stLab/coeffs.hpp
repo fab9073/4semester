@@ -3,6 +3,10 @@
 #include <iostream>
 #include <cmath>
 
+using std::endl;
+using std::cout;
+using std::cin;
+
 int const quadEq = 3;
 
 enum countSols {
