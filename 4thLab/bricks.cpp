@@ -6,6 +6,44 @@ TBrick::TBrick(float brickX, float brickY) {
 	x = brickX; y = brickY;
 }
 
+bool TBrick::lifesAway(TBall& ball, int& score)
+{ 
+	lifes--; 
+	score++;
+	if (lifes == 0) {
+		score++;
+		return true;
+	}
+	return false;
+}
+
+bool TBrickUnbrkbl::lifesAway(TBall& ball, int& score) {
+	return false;
+}
+
+float const SPEED_UP = 1.05f;
+
+bool TBrickSpeedup::lifesAway(TBall& ball, int& score) {
+	lifes--;
+	score++;
+	ball.multSpeed(SPEED_UP);
+	if (lifes == 0) {
+		score++;
+		return true;
+	}
+	return false;
+}
+
+void TBrickFlying::Move() {
+	x += dx;
+	if (x < getWidth() - 1) {
+		dx *= -1;
+	}
+	if (x > 1 - getWidth()) {
+		dx *= -1;
+	}
+}
+
 int const GREEN = 3;
 int const YELLOW = 2;
 int const RED = 1;
@@ -36,8 +74,6 @@ void TBrick::DrawObj() {
 	glEnd();
 }
 
-
-
 void TBrickUnbrkbl::DrawObj() {
 	glBegin(GL_TRIANGLE_FAN);
 	glColor3f(0.5f, 0.5f, 0.5f);
@@ -55,7 +91,6 @@ void TBrickUnbrkbl::DrawObj() {
 	glVertex2f(x + width * 0.5f, y - height * 0.5f);
 	glEnd();
 }
-
 
 void TBrickSpeedup::DrawObj() {
 	glBegin(GL_TRIANGLE_FAN);
@@ -97,37 +132,5 @@ void TBrickSpeedup::DrawObj() {
 	glVertex2f(x + width * 0.3f, y);
 	glVertex2f(x + width * 0.1f, y + height * 0.2f);
 	glEnd();
-}
 
-bool TBrick::XtraPower(TBall& ball)
-{
-	lifes--;
-	if (lifes == 0) {
-		return true;
-	}
-	return false;
-}
-
-void TBall::setdx(float K) { dx *= K; }
-void TBall::setdy(float K) { dy *= K; }
-
-bool TBrickSpeedup::XtraPower(TBall& ball)
-{
-	lifes--;
-	ball.setdx(1.1f);
-	ball.setdy(1.1f);
-	if (lifes == 0) {
-		return true;
-	}
-	return false;
-}
-
-void TBrickFlying::Move() {
-	x += dx;
-	if (x < getWidth() - 1) {
-		dx *= -1;
-	}
-	if (x > 1 - getWidth()) {
-		dx *= -1;
-	}
 }

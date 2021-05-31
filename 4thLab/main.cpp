@@ -1,6 +1,8 @@
+#include <windows.h>
+#include <gl/gl.h>
 #include "arkanoid.hpp"
 
-
+#pragma comment(lib, "opengl32.lib")
 
 LRESULT CALLBACK WindowProc(HWND, UINT, WPARAM, LPARAM);
 void EnableOpenGL(HWND hwnd, HDC*, HGLRC*);
@@ -60,7 +62,7 @@ int WINAPI WinMain(HINSTANCE hInstance,
 
 	glScalef(float(windowH) / float(windowW), 1, 1);
 
-	Arkanoid Game;
+	ArkanoidGame arkanoid;
 
 	/* program main loop */
 	while (!bQuit)
@@ -83,50 +85,17 @@ int WINAPI WinMain(HINSTANCE hInstance,
 		{
 			/* OpenGL animation code goes here */
 
-			glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+			glClearColor(0.0f, 0.0f, 0.0f, 0.5f);
 			glClear(GL_COLOR_BUFFER_BIT);
-			Game.DrawFrames();
-			Game.DrawBricks();
-			Game.DrawLifes();
-			Game.DrawBonuses();
-			Game.MoveBricks();
-			Game.MoveBonuses();
-			
-			if (Game.carriage.TakeBonus(Game.bonuses)) 
-			{
-				if (rand() % Game.BonusBallChance == 1 && Game.bonusBall == nullptr) 
-				{
-					if (Game.bonusBall == nullptr)
-						Game.bonusBall = new TBall();
-				}
-				else 
-				{
-					Game.bricks.push_back(new TBrickFlying());
-				}
-			}
-			if (Game.bonusBall != nullptr) {
-				Game.bonusBall->DrawObj();
-				Game.bonusBall->DestroyBricks(Game.bricks, Game.bonuses, Game.score);
-				if (Game.bonusBall->Move(Game.carriage)) {
-					delete Game.bonusBall;
-					Game.bonusBall = nullptr;
-				}
-			}
-			Game.ball->DrawObj();
-			if (Game.ball->Move(Game.carriage))
-			{
-				delete Game.ball;
-				Game.lifes.pop_back();
-				Game.ball = new TBall();
-				if (Game.lifes.empty())
-				{
-					break;
-				}
-			}
-			Game.ball.DestroyBricks(Game.bricks, Game.bonuses, Game.score);
-			Game.carriage.DrawObj();
-			Game.carriage.Move('A', 'D', -1, 1);
-			Game.ShowScore();
+
+			arkanoid.DrawFrames();
+			arkanoid.ShowScore();
+			arkanoid.DrawBricks();
+			arkanoid.DrawLifes();
+			arkanoid.MoveBallz();
+			arkanoid.MoveCarriage();
+			arkanoid.MoveBonuses();
+
 			SwapBuffers(hDC);
 
 			Sleep(10);
